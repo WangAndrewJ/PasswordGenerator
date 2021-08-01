@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 
 namespace PasswordGenerator
 {
@@ -8,6 +9,7 @@ namespace PasswordGenerator
         {
             string characters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890-=[];',./!@#$%^&*()_+{}|:<>?";
             char[] characterArray = characters.ToCharArray();
+            string password = string.Empty;
 
             while (true)
             {
@@ -15,7 +17,7 @@ namespace PasswordGenerator
 
                 bool isANumber = int.TryParse(Console.ReadLine(), out int numberOfCharacters);
 
-                if (numberOfCharacters > 0 && numberOfCharacters < 2001 && isANumber)
+                if (numberOfCharacters > 1 && numberOfCharacters < 2001 && isANumber)
                 {
                     Random random = new Random();
 
@@ -23,11 +25,10 @@ namespace PasswordGenerator
 
                     for (int i = 0; i < numberOfCharacters; i++)
                     {
-                        Console.Write(characterArray[random.Next(0, characterArray.Length)]);
+                        password += characterArray[random.Next(0, characterArray.Length)];
                     }
 
-                    Console.Write("\n");
-
+                    Console.WriteLine(password);
                     Console.WriteLine("Press \"a\" to create a new password. Press \"s\" to save the password. Press any other key to close the program.");
 
                     switch (Console.ReadKey().Key)
@@ -38,7 +39,23 @@ namespace PasswordGenerator
 
                         case ConsoleKey.S:
                             Console.Write("\n");
-                            // Save Password
+                            Console.WriteLine("Please type the location of the save file");
+
+                            try
+                            {
+                                string path = Console.ReadLine();
+
+                                TextWriter writer = new StreamWriter(path, true);
+
+                                writer.Write(password);
+                                writer.Write("\n");
+                                writer.Close();
+                            }
+                            catch (Exception ex)
+                            {
+                                Console.WriteLine(ex);
+                            }
+
                             break;
 
                         default:
@@ -47,7 +64,7 @@ namespace PasswordGenerator
                 }
                 else
                 {
-                    Console.WriteLine("Please enter a integer number above 0 and below 2001.");
+                    Console.WriteLine("Please enter a integer number above 1 and below 2001.");
                 }
             }
 
